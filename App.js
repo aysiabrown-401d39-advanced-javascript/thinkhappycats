@@ -1,13 +1,16 @@
 import React, {useState} from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Share, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
+
 
 // You can import from local files
 import RandomCat from './components/RandomCat';
+import Gallery from './components/Gallery'
 
 // or any pure javascript modules available in npm
 import { Card, Button } from 'react-native-paper';
 
+// importing local cat images 
 import Cat1 from './assets/cat1.png';
 import Cat2 from './assets/cat2.jpeg';
 import Cat3 from './assets/cat3.jpeg';
@@ -21,11 +24,22 @@ import Cat10 from './assets/cat10.jpeg';
 import Cat11 from './assets/cat11.jpeg';
 import Cat12 from './assets/cat12.jpeg';
 import Cat13 from './assets/cat13.jpeg';
+import Cat14 from './assets/cat14.jpeg';
+import Cat15 from './assets/cat15.jpeg';
+import Cat16 from './assets/cat16.jpeg';
+import Cat17 from './assets/cat17.jpeg';
+import Cat18 from './assets/cat18.jpeg';
+import Cat19 from './assets/cat19.jpeg';
+import Cat20 from './assets/cat20.jpeg';
 
 
 
 export default function App() {
-  const [allCats, setallCats] = useState([Cat1,Cat2,Cat3,Cat4,Cat5,Cat6,Cat7,Cat8,Cat9,Cat10,Cat11,Cat12,Cat13])
+  const [allCats, setallCats] = useState([
+    Cat1,Cat2,Cat3,Cat4,Cat5,
+    Cat6,Cat7,Cat8,Cat9,Cat10,
+    Cat11,Cat12,Cat13,Cat14,Cat15,
+  Cat16,Cat17, Cat18,Cat19, Cat20]);
   const [jokes, setJokes] = useState([
     {joke:'What do cats like to eat on a hot day?', punchline: 'A mice-cream cone!'},
     {joke: 'Why do cats always get their way? ', punchline: 'They are very purr-suavsive!'},
@@ -41,6 +55,7 @@ export default function App() {
     {joke: 'What do cats look for in a significant other?', punchline: 'A great purrsonality!'},
   ])
   const [punchline, setPunch] = useState(false);
+  const [seeGallery, setSeeGallery] = useState(false);
   const [index, setIndex] = useState([0, 0])
   const [cat, setCat] = useState([allCats[index[0]],jokes[index[1]]])
   
@@ -54,31 +69,77 @@ export default function App() {
       joke_idx = Math.floor(Math.random() * jokes.length);
     }
     setIndex([cat_idx, joke_idx]);
-    setCat([allCats[cat_idx], jokes[joke_idx]]);
+    if(cat_idx >= 20) {
+      setCat([{uri: allCats[cat_idx]}, jokes[joke_idx]]);
+    } else {
+      setCat([allCats[cat_idx], jokes[joke_idx]]);
+    }
     setPunch(false);
+  }
+
+  const addImageToList = (url) => {
+    console.log('url', url);
+    setallCats([...allCats, url]);
   }
 
   const viewPunchline = () => {
     setPunch(true);
   }
 
+  const viewGallery = () => {
+    if(seeGallery) {
+      setSeeGallery(false)
+    } else {
+      setSeeGallery(true)
+    }
+  }
+
+  // https://reactnative.dev/docs/share
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `I found a cat joke: ${jokes[index[1]].joke} ${jokes[index[1]].punchline}`,
+      })
+      if(result.action === Share.sharedAction) {
+        if(result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>
-        Think Happy Cats!
-      </Text>
-      <Text style={styles.paragraph}>
-          Turn that frown around with a random cat photo! 
-      </Text>
-      <Button onPress={pressHandler}>Tap for Cat!</Button>
-      <Card>
-        <RandomCat
-        randoCat = {cat}
-        viewPunchline = {viewPunchline}
-        punchline = {punchline} />
-      </Card>
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.header}>
+          Think Happy Cats!
+        </Text>
+        <Text style={styles.paragraph}>
+            Turn that frown around with a random cat photo! 
+        </Text>
+        <Button onPress={pressHandler}>Tap to Shuffle!</Button>
+        <Card>
+          <RandomCat
+          randoCat = {cat}
+          viewPunchline = {viewPunchline}
+          punchline = {punchline} />
+        </Card>
+        <Button style={styles.button} onPress={handleShare}>Share Joke!</Button>
+        <Button style={styles.button} onPress={viewGallery}>Toggle Gallery</Button>
+        {seeGallery ?
+                <Gallery 
+                cats={allCats}
+                addImageToList = {addImageToList}/>
+        : null }
+      </View>
+    </ScrollView>
   );
 }
 
@@ -88,7 +149,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: Constants.statusBarHeight,
     backgroundColor: '#ecf0f1',
-    padding: 8,
+    padding: 4,
   },
   paragraph: {
     margin: 12,
@@ -98,5 +159,8 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24, 
     textAlign: 'center',
-  }
+  },
+  button: {
+    backgroundColor: 'pink',
+}
 });

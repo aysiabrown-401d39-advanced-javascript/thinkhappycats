@@ -12,13 +12,16 @@
 - Run `npm start ios` to begin the iOS simulation using XCode
   - it should open a internet tab for `http://localhost:19002/` as well as launching the simulator application 
   - otherwise, you may scan the QR code on your device and view the live demo from the expo app on your device 
+  - if the application will not load from `npm start ios` try `npm start` and then from your browser window click `run iOS simulation`
 
 ### Build 
 - Currently the application uses two components, App & RandomCat where app stores all of the states of the application and passes them down to RandomCat to access and render. 
-- `Tap for Cat!` will rerender the page with a new cat image and joke; checking the previously stored index of our collection before rerendering with a new index to prevent immediate repeats 
+- `Tap for Shuffle!` will rerender the page with a new cat image and joke; checking the previously stored index of our collection before rerendering with a new index to prevent immediate repeats 
 - `Punchline` will reveal the punchline to the cat joke 
-- Think Happy Cats is planning to add a 'share to contacts' feature where you may share your favorite cat photo & quote pairing to any of your friends and family. 
-- Think Happy Cats is also planning to add a gallery feature to view all the cat photos located in our collection at the user's leisure 
+- Think Happy Cats is planning to add a 'share to contacts' feature where you may share your favorite joke to any of your friends and family. 
+- `Share` will allow you to share the current joke being viewed to your friends and family via the iPhone's native share feature
+- `Toggle Gallery` will toggle the gallery view of all the cat photos within in the application, and the `add` button will allow you to add photo media (of cats) to the gallery from your device. 
+  - note: this will request permissions to access read data from your device media 
 
 
 ### Resources
